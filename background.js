@@ -6,4 +6,4 @@ chrome.runtime.onMessage.addListener(function(response, sender, sendResponse){
  // alert(response);
 })
 
-chrome.runtime.sendMessage('tish mish');
+chrome.runtime.sendMessage('test');

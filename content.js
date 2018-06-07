@@ -4,10 +4,10 @@ port.onMessage.addListener(function(message,sender){
 });
 */
 
-var port = chrome.runtime.connect({name:"mycontentscript"});
-alert(port);
+let port = chrome.runtime.connect({name:"mycontentscript"});
+
+//alert(port);
 port.onMessage.addListener(function(res, sender, sendRes) {
-    alert(res + 'a');
     if (res.enableListeners) {
         document.addEventListener('click', function(e){
             let target = e.target;
