@@ -1,21 +1,12 @@
-/*var changeColor = document.getElementById('changeColor');
-
-chrome.storage.sync.get('color', function(data) {
-changeColor.style.backgroundColor = data.color;
-changeColor.setAttribute('value', data.color);
-});
-
-changeColor.onclick = function(element) {
-let color = element.target.value;
-    chrome.tabs.executeScript(
-        tabs[0].id,
-        {code: 'document.body.style.backgroundColor = "' + color + '";'});
-};*/
-
-window.onload = function() {
-    document.getElementById("clickme").onclick = function() {
-        chrome.extension.sendMessage({
-            type: "color-divs"
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    let button = document.getElementById('clickme');
+    console.log('added');
+    if (button) {
+        console.log('ima');
+        button.addEventListener('click', function(e){
+            console.log('raboti');
+            chrome.runtime.sendMessage('buttonClicked');
+        //    port.postMessage({greeting: "Please, work"});
+        })
     }
-}
+})

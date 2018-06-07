@@ -1,21 +1,30 @@
-/*window.onload = function() {
-    var port = chrome.extension.connect({ name: "color-divs-port" });
-    document.getElementById("button").onclick = function() {
-        port.postMessage({ type: "color-divs"});
-    }
-}*/
+/*
+port.onMessage.addListener(function(message,sender){
+    alert(message.greeting);
+});
+*/
 
-chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
-    switch(message.type) {
-        case "colors-div":
-            var divs = document.querySelectorAll("div");
-            if(divs.length === 0) {
-                alert("There are no any divs in the page.");
-            } else {
-                for(var i=0; i < divs.length; i++) {
-                    divs[i].style.backgroundColor = message.color;
-                }
+var port = chrome.runtime.connect({name:"mycontentscript"});
+alert(port);
+port.onMessage.addListener(function(res, sender, sendRes) {
+    alert(res + 'a');
+    if (res.enableListeners) {
+        document.addEventListener('click', function(e){
+            let target = e.target;
+            let targetContent = target.innerText;
+            const modal = document.createElement('div');
+        
+            modal.style.width = 50 + 'px';
+            modal.style.height = 100 + 'px';
+            modal.classList.add('tish');
+            modal.style.backgroundColor = 'green';
+            modal.style.position = 'fixed';
+            modal.style.top = 25 + '%';
+        
+            if (targetContent) {
+                document.documentElement.appendChild(modal);
             }
-        break;
+        })
     }
 });
+

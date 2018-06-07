@@ -7,6 +7,7 @@ const kButtonColors = ['#3aa757', '#e8453c', '#f9bb2d', '#4688f1']
         chrome.storage.sync.set({color: item}, function() {
           console.log('color is ' + item);
         })
+        chrome.tabs.sendMessage({'method': 'test'});
       });
       page.appendChild(button);
     }
