@@ -7,8 +7,7 @@
   "omnibox": { "keyword" : "yeah" },
   "browser_action": {
       "default_icon": { "19": "icons/translation.png"},
-      "default_title": "That's the tool tip",
-      "default_popup": "browseraction/popup.html"
+      "default_title": "That's the tool tip"
   },
   "background": {
       "scripts": ["background.js"],
@@ -19,7 +18,18 @@
   },
   "content_scripts": [{
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "css": ["assets/styles/compiled/modal.css"]
   }],
-  "devtools_page": "devtools/devtools.html"
+  "devtools_page": "devtools/devtools.html",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "bookmarks",
+    "downloads",
+    "storage",
+    "unlimitedStorage",
+    "http://*/",
+    "https://*/"
+  ]
 }

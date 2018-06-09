@@ -1,0 +1,61 @@
+.tr-modal--button, .tr-modal--save-btn, .tr-modal--close-btn {
+  position: absolute;
+  bottom: 18px;
+  width: 108px;
+  height: 36px;
+  font-weight: bold;
+  font-size: 14px;
+  border: none; }
+
+.tr-modal--save-btn {
+  background-color: transparent;
+  color: #1DD1E2; }
+
+.tr-modal--close-btn {
+  background-color: transparent;
+  color: #a30707; }
+
+.tr-modal {
+  position: fixed;
+  top: 50%;
+  left: 20%;
+  display: flex;
+  width: 50%;
+  min-height: 100px;
+  background-color: #ececec;
+  padding: 18px;
+  box-shadow: 0px 2px 6px #666666;
+  max-height: 400px;
+  overflow: auto; }
+
+.tr-modal .tr-modal--save-btn {
+  right: 18px;
+  border: none;
+  width: 108px;
+  height: 36px; }
+  .tr-modal .tr-modal--save-btn:hover {
+    background-color: rgba(29, 209, 226, 0.1); }
+.tr-modal .tr-modal--close-btn {
+  right: 128px;
+  border: none;
+  width: 108px;
+  height: 36px; }
+  .tr-modal .tr-modal--close-btn:hover {
+    background-color: rgba(163, 7, 7, 0.1); }
+
+.tr-modal--destroy {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 50%;
+  top: 2px;
+  right: 10px; }
+
+.tr-modal--destroy:before {
+  content: 'X';
+  color: #1DD1E2; }
+
+.hidden {
+  display: none; }
+
+/*# sourceMappingURL=modal.css.map */

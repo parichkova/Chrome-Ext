@@ -1,0 +1,24 @@
+@import '_variables';
+
+.tr-modal--button {
+    position: absolute;
+    bottom: 18px;
+    width: $button-width;
+    height: $button-height;
+    font-weight: bold;  
+    font-size: $font-small;
+    border: none;
+    
+}
+
+.tr-modal--save-btn  {
+    @extend .tr-modal--button;
+    background-color: $button-save-background-color;
+    color: $button-save-color;
+}
+
+.tr-modal--close-btn {
+    @extend .tr-modal--button;
+    background-color: $button-close-background-color;
+    color: $button-close-color;
+}

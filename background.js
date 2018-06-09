@@ -1,9 +1,13 @@
-chrome.runtime.onMessage.addListener(function(response, sender, sendResponse){
- // if (response === 'buttonClicked') {
-      chrome.runtime.sendMessage('tish mish');
-  //}
+//you will see this message on plugin installation
 
- // alert(response);
-})
+chrome.runtime.onInstalled.addListener(function() {
+  alert('Installed');
+});
 
-chrome.runtime.sendMessage('test');
+//when clickedx on the extension icon, logic.js code will be executed
+chrome.browserAction.onClicked.addListener(function(tab) { 
+  //alert('icon clicked');
+  chrome.tabs.executeScript(tab.id, {file: 'logic.js'});
+
+});
+
