@@ -1,23 +1,30 @@
 @import '_variables';
 @import '_button';
+@import '_heading';
 
 .tr-modal {
     position: fixed;
-    top: 50%;  
+    top: 25%;  
     left: 20%;
-    display: flex;
-    width: 50%;
-    min-height: 100px;  
+    min-width: $modal-min-width;
+    min-height: $modal-min-height;  
+    max-height: $modal-min-width;
     background-color: $background-modal-color;
-    padding: 18px;
+    padding: $modal-padding;
     box-shadow: 0px 2px 6px $modal-border-color;
-    max-height: 400px;
+    overflow: auto;
+    z-index: 9999999;
+}
+
+.tr-modal .tr-modal--textarea {
+    display: block;
+    width: 100%;
+    max-height: $modal-text-area-height;
     overflow: auto;
 }
 
 .tr-modal {
     .tr-modal--save-btn {
-        right: 18px;
         border: none;
         width: $button-width;    
         height: $button-height;
@@ -28,8 +35,7 @@
     }
 
     .tr-modal--close-btn {
-        right: 20 + $button-width;
-        border: none;
+       border: none;
         width: $button-width;    
         height: $button-height;
 

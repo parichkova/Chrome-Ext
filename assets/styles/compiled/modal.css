@@ -1,7 +1,12 @@
+.tr-modal--innerField {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 18px; }
+
 .tr-modal--button, .tr-modal--save-btn, .tr-modal--close-btn {
-  position: absolute;
-  bottom: 18px;
-  width: 108px;
+  width: 90px;
   height: 36px;
   font-weight: bold;
   font-size: 14px;
@@ -15,30 +20,41 @@
   background-color: transparent;
   color: #a30707; }
 
+.tr-modal--heading {
+  text-align: left;
+  text-transform: capitalize;
+  margin-bottom: 18px;
+  color: #0b292c;
+  font-size: 18px; }
+
 .tr-modal {
   position: fixed;
-  top: 50%;
+  top: 25%;
   left: 20%;
-  display: flex;
-  width: 50%;
+  min-width: 400px;
   min-height: 100px;
-  background-color: #ececec;
-  padding: 18px;
-  box-shadow: 0px 2px 6px #666666;
   max-height: 400px;
+  background-color: #ececec;
+  padding: 12px 18px;
+  box-shadow: 0px 2px 6px #666666;
+  overflow: auto;
+  z-index: 9999999; }
+
+.tr-modal .tr-modal--textarea {
+  display: block;
+  width: 100%;
+  max-height: 250px;
   overflow: auto; }
 
 .tr-modal .tr-modal--save-btn {
-  right: 18px;
   border: none;
-  width: 108px;
+  width: 90px;
   height: 36px; }
   .tr-modal .tr-modal--save-btn:hover {
     background-color: rgba(29, 209, 226, 0.1); }
 .tr-modal .tr-modal--close-btn {
-  right: 128px;
   border: none;
-  width: 108px;
+  width: 90px;
   height: 36px; }
   .tr-modal .tr-modal--close-btn:hover {
     background-color: rgba(163, 7, 7, 0.1); }

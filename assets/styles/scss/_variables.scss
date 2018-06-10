@@ -1,9 +1,12 @@
 $background-modal-color: #ececec;
 $modal-border-color: #666666;
-$modal-padding: 8px;
- 
+$modal-padding: 12px 18px;
+$modal-min-height: 100px;
+$modal-min-width: 400px;
 
-$button-width: 108px; 
+$modal-text-area-height: 250px;
+
+$button-width: 90px; 
 $button-height: 36px;
 $border-radius: 8px;
 
@@ -15,5 +18,8 @@ $button-close-background-color: transparent;
 $button-close-color: rgb(163, 7, 7);
 $button-close-box-shadow: rgb(134, 21, 21);
 
+$modal-heading-color: darken($button-save-color, 50%);
+$modal-heading-font-size: 18px;
+$modal-heading-margin-bottom: 18px;
 
 $font-small: 14px;  

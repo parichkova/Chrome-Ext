@@ -3,8 +3,9 @@
     let doc = document;
     let singletonFlag = false;
     let isModalCreated = false;
-    let modal = null;
-    let textField = null;
+    let modalEl = null;
+    let textAreaEl = null;
+    let translationArrOfObjs = [];
 
     if (!singletonFlag) {
         singletonFlag = true;    
@@ -18,51 +19,58 @@
         let target = e.target;
 
         if (target.innerText) {
-            console.log(target.innerText);
 
             if (!isModalCreated) {
                 createTranslationField(target.innerText);
-                addEventListeners(); 
                 isModalCreated = true;
             }
-
-            if (modal && modal.classList.contains('hidden')) {
-                modal.classList.remove('hidden');
-                addValues(textField, target.innerText);
+            
+            if (modalEl && modalEl.classList.contains('hidden')) {
+                modalEl.classList.remove('hidden');
+                addValues(textAreaEl, target.innerText);
             }
         }
     }
 
     function createTranslationField(text) {
-        let field = doc.createElement('div');
-        let innerFieldOriginalText = doc.createElement('div');
+        let modal = doc.createElement('div');
+        let buttonsHolder = doc.createElement('div');
         let button = doc.createElement('button');
         let closeBtn = doc.createElement('button');
+        let textArea = doc.createElement('textarea');
+        let header = doc.createElement('h3');
 
-        field.classList.add('tr-modal');
-        innerFieldOriginalText.classList.add('tr-modal--innerField');
+        modal.classList.add('tr-modal');
+        header.classList.add('tr-modal--heading');
+        textArea.classList.add('tr-modal--textarea');
+        buttonsHolder.classList.add('tr-modal--innerField');
         button.classList.add('tr-modal--save-btn');
         closeBtn.classList.add('tr-modal--close-btn');
-
+        
+        header.innerText = 'Translation Helper';
         button.innerText = 'SAVE';
-        closeBtn.innerText = 'CANCEL';
+        closeBtn.innerText = 'DOWNLOAD';
+        addValues(textArea, text);
 
-        addValues(innerFieldOriginalText, text);
-        field.appendChild(innerFieldOriginalText);
-        field.appendChild(button);
-        field.appendChild(closeBtn);
+        buttonsHolder.appendChild(button);
+        buttonsHolder.appendChild(closeBtn);
+       
+        modal.appendChild(header);
+        modal.appendChild(textArea);
+        modal.appendChild(buttonsHolder);
+        
+        doc.body.appendChild(modal);
+        modalEl  = doc.getElementsByClassName('tr-modal')[0];
+        textAreaEl = doc.getElementsByClassName('tr-modal--textarea')[0];
 
-        doc.body.appendChild(field);
-        modal  = doc.getElementsByClassName('tr-modal')[0];
-        textField = doc.getElementsByClassName('tr-modal--innerField');
         addEventListeners();
     }
 
     function addEventListeners() {
-        if (!modal) {return;}
+        if (!modalEl) {return;}
         
-        let modalSaveBtn = modal.querySelector('.tr-modal--save-btn');
-        let modalCloseBtn = modal.querySelector('.tr-modal--close-btn');
+        let modalSaveBtn = modalEl.querySelector('.tr-modal--save-btn');
+        let modalCloseBtn = modalEl.querySelector('.tr-modal--close-btn');
 
         if (modalSaveBtn) {
             modalSaveBtn.addEventListener('click', saveTranslation);
@@ -78,16 +86,33 @@
             return;
         }
 
-        domEl.innerText = stringVal;
+        domEl.dataset.text = stringVal;
     }
+
     function saveTranslation(e) {
+        let originalText = textAreaEl.getAttribute('data-text');
+        let translatedText = textAreaEl.value.trim();
+
+        if (!translatedText.length) {return;}
+
         hideModal(e);
+
         isModalCreated = false;
+
+        try {
+            translationArrOfObjs.originalText = translatedText;
+        
+        } catch(e) {
+            console.log(e);
+        }
+
+        console.log(translationArrOfObjs);
+
     }
 
     function hideModal(e) {
         e.stopPropagation();
-        modal.style.display = 'none';
+        modalEl.style.display = 'none';
     }
 
     function closeModal() {
@@ -98,7 +123,9 @@
     }
 
     function destroyModal() {
-        doc.removeChild(modal);
+        // removeEventListeners();
+
+        doc.removeChild(modalEl);
     }
 
     function download(filename, text) {

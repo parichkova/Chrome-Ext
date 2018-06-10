@@ -1,8 +1,14 @@
 @import '_variables';
 
+.tr-modal--innerField {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+
 .tr-modal--button {
-    position: absolute;
-    bottom: 18px;
     width: $button-width;
     height: $button-height;
     font-weight: bold;  
