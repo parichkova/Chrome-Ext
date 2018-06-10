@@ -17,10 +17,11 @@
 
     function handleClick(e) {
         let target = e.target;
+        let isBtnClose = e.target.classList.contains('tr-modal--close-btn');
+        let isBtnSave = e.target.classList.contains('tr-modal--save-btn');
 
         if (target.innerText) {
-
-            if (!isModalCreated) {
+            if (!isModalCreated && (!isBtnClose || !isBtnSave)) {
                 createTranslationField(target.innerText);
                 isModalCreated = true;
             }
@@ -28,6 +29,15 @@
             if (modalEl && modalEl.classList.contains('hidden')) {
                 modalEl.classList.remove('hidden');
                 addValues(textAreaEl, target.innerText);
+            }
+
+            //this should be fixed, with checking whether the target has parent tr-modal.
+            if (isBtnClose) {
+                closeModal(e);
+            }
+
+            if (isBtnSave) {
+                saveTranslation(e);
             }
         }
     }
@@ -85,19 +95,18 @@
         if (!domEl || !stringVal) {
             return;
         }
-
+        domEl.value = "";
         domEl.dataset.text = stringVal;
     }
 
     function saveTranslation(e) {
+        e.stopPropagation();
         let originalText = textAreaEl.getAttribute('data-text');
         let translatedText = textAreaEl.value.trim();
 
         if (!translatedText.length) {return;}
 
         hideModal(e);
-
-        isModalCreated = false;
 
         try {
             translationArrOfObjs.originalText = translatedText;
@@ -112,12 +121,13 @@
 
     function hideModal(e) {
         e.stopPropagation();
-        modalEl.style.display = 'none';
+        modalEl.classList.add('hidden');
     }
 
-    function closeModal() {
+    function closeModal(e) {
         //destroyModal();
-        download("hello.txt","This is the content of my file :)");
+        e.stopPropagation();
+        download("hello.txt", translationArrOfObjs.toString());
 
         isModalCreated = false;
     }
