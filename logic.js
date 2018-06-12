@@ -5,7 +5,7 @@
     let isModalCreated = false;
     let modalEl = null;
     let textAreaEl = null;
-    let translationArrOfObjs = [];
+    let translationArrOfObjs = {};
 
     if (!singletonFlag) {
         singletonFlag = true;    
@@ -20,6 +20,8 @@
         let isBtnClose = e.target.classList.contains('tr-modal--close-btn');
         let isBtnSave = e.target.classList.contains('tr-modal--save-btn');
 
+        checkForNeedOfStoppingProp(e);
+
         if (target.innerText) {
             if (!isModalCreated && (!isBtnClose || !isBtnSave)) {
                 createTranslationField(target.innerText);
@@ -33,6 +35,7 @@
 
             //this should be fixed, with checking whether the target has parent tr-modal.
             if (isBtnClose) {
+                saveTranslation(e);
                 closeModal(e);
             }
 
@@ -40,6 +43,23 @@
                 saveTranslation(e);
             }
         }
+    }
+
+    function checkForNeedOfStoppingProp(e) {
+        let el = e.target;
+        let stop = false;
+
+        do {
+
+            if (el.tagName === 'BUTTON' || el.tagName === 'A') {
+                e.preventDefault();
+                e.stopPropagation();
+                stop = true;
+            }
+
+            el = el.parentNode;
+        } while (!stop && el && el.parentNode)
+
     }
 
     function createTranslationField(text) {
@@ -127,7 +147,7 @@
     function closeModal(e) {
         //destroyModal();
         e.stopPropagation();
-        download("hello.txt", translationArrOfObjs.toString());
+        download("hello.txt", JSON.stringify(translationArrOfObjs));
 
         isModalCreated = false;
     }
@@ -140,7 +160,7 @@
 
     function download(filename, text) {
         var element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + text);
         element.setAttribute('download', filename);
       
         element.style.display = 'none';
