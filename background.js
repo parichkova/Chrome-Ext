@@ -7,6 +7,7 @@ chrome.runtime.onInstalled.addListener(function() {
 //when clickedx on the extension icon, logic.js code will be executed
 chrome.browserAction.onClicked.addListener(function(tab) { 
   //alert('icon clicked');
+  chrome.tabs.executeScript(tab.id, {file: 'dragElementLogic.js'});
   chrome.tabs.executeScript(tab.id, {file: 'logic.js'});
 
 });

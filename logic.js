@@ -5,7 +5,7 @@
     let isModalCreated = false;
     let modalEl = null;
     let textAreaEl = null;
-    let translationArrOfObjs = {};
+    let translationArrOfObjs = [];
 
     if (!singletonFlag) {
         singletonFlag = true;    
@@ -19,47 +19,27 @@
         let target = e.target;
         let isBtnClose = e.target.classList.contains('tr-modal--close-btn');
         let isBtnSave = e.target.classList.contains('tr-modal--save-btn');
+        let isBtnDownload = e.target.classList.contains('tr-modal--btn-download');
 
-        checkForNeedOfStoppingProp(e);
+        if (isBtnSave) {
+            saveTranslation(e);
+        }
 
-        if (target.innerText) {
-            if (!isModalCreated && (!isBtnClose || !isBtnSave)) {
+        if (isBtnClose) {
+            closeModal(e);
+        }
+
+        if (target.innerText && !(isBtnClose || isBtnSave || isBtnDownload)) {
+            if (!isModalCreated) {
                 createTranslationField(target.innerText);
                 isModalCreated = true;
             }
             
-            if (modalEl && modalEl.classList.contains('hidden')) {
+            if (!(isBtnClose || isBtnSave || isBtnDownload) && modalEl && modalEl.classList.contains('hidden')) {
                 modalEl.classList.remove('hidden');
                 addValues(textAreaEl, target.innerText);
             }
-
-            //this should be fixed, with checking whether the target has parent tr-modal.
-            if (isBtnClose) {
-                saveTranslation(e);
-                closeModal(e);
-            }
-
-            if (isBtnSave) {
-                saveTranslation(e);
-            }
         }
-    }
-
-    function checkForNeedOfStoppingProp(e) {
-        let el = e.target;
-        let stop = false;
-
-        do {
-
-            if (el.tagName === 'BUTTON' || el.tagName === 'A') {
-                e.preventDefault();
-                e.stopPropagation();
-                stop = true;
-            }
-
-            el = el.parentNode;
-        } while (!stop && el && el.parentNode)
-
     }
 
     function createTranslationField(text) {
@@ -92,23 +72,8 @@
         doc.body.appendChild(modal);
         modalEl  = doc.getElementsByClassName('tr-modal')[0];
         textAreaEl = doc.getElementsByClassName('tr-modal--textarea')[0];
-
-        addEventListeners();
-    }
-
-    function addEventListeners() {
-        if (!modalEl) {return;}
         
-        let modalSaveBtn = modalEl.querySelector('.tr-modal--save-btn');
-        let modalCloseBtn = modalEl.querySelector('.tr-modal--close-btn');
-
-        if (modalSaveBtn) {
-            modalSaveBtn.addEventListener('click', saveTranslation);
-        }
-
-        if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', closeModal);
-        }
+        modalEl.addEventListener('mousedown', dragHelper.dragElement);
     }
 
     function addValues(domEl, stringVal) {
@@ -129,14 +94,14 @@
         hideModal(e);
 
         try {
-            translationArrOfObjs.originalText = translatedText;
+            translationArrOfObjs.push({
+                originalText: originalText,
+                translatedText: translatedText
+            });
         
-        } catch(e) {
-            console.log(e);
+        } catch(ex) {
+            console.log(ex);
         }
-
-        console.log(translationArrOfObjs);
-
     }
 
     function hideModal(e) {
@@ -147,30 +112,28 @@
     function closeModal(e) {
         //destroyModal();
         e.stopPropagation();
-        download("hello.txt", JSON.stringify(translationArrOfObjs));
+        saveTranslation(e);
+        download("hello.php", JSON.stringify(translationArrOfObjs));
 
-        isModalCreated = false;
+        isModalCreated = true;
     }
 
     function destroyModal() {
-        // removeEventListeners();
-
         doc.removeChild(modalEl);
     }
 
     function download(filename, text) {
-        var element = document.createElement('a');
+        let element = document.createElement('a');
+
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + text);
+        element.classList.add('tr-modal--btn-download')
         element.setAttribute('download', filename);
       
         element.style.display = 'none';
-        document.body.appendChild(element);
+        modalEl.appendChild(element);
       
         element.click();
-      
-        document.body.removeChild(element);
+        modalEl.removeChild(element);
+        translationArrOfObjs = [];
       }
-      
-      // Start file download.
-      
 })();
