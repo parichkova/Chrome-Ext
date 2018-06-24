@@ -28,9 +28,11 @@ let dragHelper = (() => {
             pos4 = e.clientY;
             modalEl.style.top = (modalEl.offsetTop - pos2) + "px";
             modalEl.style.left = (modalEl.offsetLeft - pos1) + "px";
+            modalEl.style.cursor = '-webkit-grabbing';
         }
     
         function closeDragElement() {
+            modalEl.style.cursor = '-webkit-grabb';
             doc.onmouseup = null;
             doc.onmousemove = null;
         }

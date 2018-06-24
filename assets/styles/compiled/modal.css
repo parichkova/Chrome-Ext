@@ -20,12 +20,19 @@
   background-color: transparent;
   color: #a30707; }
 
+.tr-modal--destroy-btn {
+  position: absolute;
+  left: 95%;
+  cursor: pointer;
+}
+
 .tr-modal--heading {
   text-align: left;
   text-transform: capitalize;
   margin-bottom: 18px;
   color: #0b292c;
-  font-size: 18px; }
+  font-size: 18px;
+}
 
 .tr-modal {
   position: fixed;
@@ -38,7 +45,11 @@
   padding: 12px 18px;
   box-shadow: 0px 2px 6px #666666;
   overflow: auto;
-  z-index: 9999999; }
+  z-index: 9999999; 
+  overflow-x: hidden;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
 
 .tr-modal .tr-modal--textarea {
   display: block;
@@ -66,10 +77,6 @@
   border: 50%;
   top: 2px;
   right: 10px; }
-
-.tr-modal--destroy:before {
-  content: 'X';
-  color: #1DD1E2; }
 
 .hidden {
   display: none; }

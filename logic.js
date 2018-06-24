@@ -6,6 +6,10 @@
     let modalEl = null;
     let textAreaEl = null;
     let translationArrOfObjs = [];
+    let anchorsArr = document.getElementsByTagName('a');
+    let buttonsArr = document.getElementsByTagName('button');
+    let anchorsArrLen =  anchorsArr.length;
+    let buttonsArrLen = buttonsArr.length;
 
     if (!singletonFlag) {
         singletonFlag = true;    
@@ -13,13 +17,41 @@
         return;
     }
 
+    (function addEventListenersAnchorsButtons() {
+        while(anchorsArrLen--) {
+            anchorsArr[anchorsArrLen].addEventListener('click', facadeStopPropagation);
+        }
+    
+        while(buttonsArrLen--) {
+            buttonsArr[buttonsArrLen].addEventListener('click',facadeStopPropagation)
+        }
+    })();
+    
+    function removeEventListenersAnchorsButtons() {
+        anchorsArrLen =  anchorsArr.length;
+        buttonsArrLen = buttonsArr.length;
+
+        while(anchorsArrLen--) {
+            anchorsArr[anchorsArrLen].removeEventListener('click', facadeStopPropagation);
+        }
+    
+        while(buttonsArrLen--) {
+            buttonsArr[buttonsArrLen].removeEventListener('click',facadeStopPropagation)
+        }
+    };
+    
     doc.addEventListener('click', handleClick);
+
+    function facadeStopPropagation(e) {
+        e.preventDefault();
+    }
 
     function handleClick(e) {
         let target = e.target;
         let isBtnClose = e.target.classList.contains('tr-modal--close-btn');
         let isBtnSave = e.target.classList.contains('tr-modal--save-btn');
         let isBtnDownload = e.target.classList.contains('tr-modal--btn-download');
+        let isDestroyBtn = e.target.classList.contains('tr-modal--destroy-btn') || e.target.classList.contains('tr-modal--destroy-btn-holder');
 
         if (isBtnSave) {
             saveTranslation(e);
@@ -29,7 +61,13 @@
             closeModal(e);
         }
 
-        if (target.innerText && !(isBtnClose || isBtnSave || isBtnDownload)) {
+        if (isDestroyBtn) {
+            e.stopPropagation();
+            e.preventDefault();
+            destroyModal();
+        }
+
+        if (target.innerText && !(isBtnClose || isBtnSave || isBtnDownload || isDestroyBtn)) {
             if (!isModalCreated) {
                 createTranslationField(target.innerText);
                 isModalCreated = true;
@@ -49,6 +87,8 @@
         let closeBtn = doc.createElement('button');
         let textArea = doc.createElement('textarea');
         let header = doc.createElement('h3');
+        let destroyBtnHolder = doc.createElement('div');
+        let destroyBtn = doc.createElement('span');
 
         modal.classList.add('tr-modal');
         header.classList.add('tr-modal--heading');
@@ -56,15 +96,21 @@
         buttonsHolder.classList.add('tr-modal--innerField');
         button.classList.add('tr-modal--save-btn');
         closeBtn.classList.add('tr-modal--close-btn');
-        
+        destroyBtnHolder.classList.add('tr-modal--destroy-btn-holder');
+        destroyBtn.classList.add('tr-modal--destroy-btn');
+
         header.innerText = 'Translation Helper';
         button.innerText = 'SAVE';
         closeBtn.innerText = 'DOWNLOAD';
-        addValues(textArea, text);
+        destroyBtn.innerText = 'X';
 
+        addValues(textArea, text);
+        
+        destroyBtnHolder.appendChild(destroyBtn);
         buttonsHolder.appendChild(button);
         buttonsHolder.appendChild(closeBtn);
        
+        modal.appendChild(destroyBtnHolder);
         modal.appendChild(header);
         modal.appendChild(textArea);
         modal.appendChild(buttonsHolder);
@@ -110,16 +156,22 @@
     }
 
     function closeModal(e) {
-        //destroyModal();
-        e.stopPropagation();
+        let language = doc.documentElement.lang ? doc.documentElement.lang.split('-')[0] : 'en';
+        let urlSplitted =  window.location.pathname.split('/');
+        let pageName = window.location.host.replace('.', '_') + '_' + urlSplitted[urlSplitted.length - 2].replace('-', '_');
+
         saveTranslation(e);
+        translationArrOfObjs.push({'lang': language, 'page': pageName});
+
         download("hello.php", JSON.stringify(translationArrOfObjs));
 
         isModalCreated = true;
     }
 
     function destroyModal() {
-        doc.removeChild(modalEl);
+        doc.body.removeChild(modalEl);
+        doc.removeEventListener('click', handleClick);
+        removeEventListenersAnchorsButtons();
     }
 
     function download(filename, text) {
