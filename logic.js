@@ -1,5 +1,5 @@
 //this is design pattern - module
-(() => {
+let mainModalLogicHelper = (() => {
     let doc = document;
     let singletonFlag = false;
     let isModalCreated = false;
@@ -74,7 +74,7 @@
             }
             
             if (!(isBtnClose || isBtnSave || isBtnDownload) && modalEl && modalEl.classList.contains('hidden')) {
-                modalEl.classList.remove('hidden');
+                showModal(e);
                 addValues(textAreaEl, target.innerText);
             }
         }
@@ -102,7 +102,9 @@
         header.innerText = 'Translation Helper';
         button.innerText = 'SAVE';
         closeBtn.innerText = 'DOWNLOAD';
-        destroyBtn.innerText = 'X';
+        destroyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg"  fill="rgb(29, 209, 226)" width="12" height="12" viewBox="0 0 24 24">\
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>\
+        <path d="M0 0h24v24H0z" fill="none"/></svg>';
 
         addValues(textArea, text);
         
@@ -155,6 +157,11 @@
         modalEl.classList.add('hidden');
     }
 
+    function showModal(e) {
+        e.stopPropagation();
+        modalEl.classList.remove('hidden');       
+    }
+
     function closeModal(e) {
         let language = doc.documentElement.lang ? doc.documentElement.lang.split('-')[0] : 'en';
         let urlSplitted =  window.location.pathname.split('/');
@@ -163,7 +170,7 @@
         saveTranslation(e);
         translationArrOfObjs.push({'lang': language, 'page': pageName});
 
-        download("hello.php", JSON.stringify(translationArrOfObjs));
+        download("hello.txt", JSON.stringify(translationArrOfObjs));
 
         isModalCreated = true;
     }
@@ -188,4 +195,11 @@
         modalEl.removeChild(element);
         translationArrOfObjs = [];
       }
+
+      return {
+        closeModal: destroyModal,
+        saveTranslation,
+        buildModal: createTranslationField,
+        showModal
+    }
 })();

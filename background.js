@@ -13,6 +13,8 @@ chrome.browserAction.onClicked.addListener(function(tab) {
   if (!loaded) {
     chrome.tabs.executeScript(tab.id, {file: 'dragElementLogic.js'});
     chrome.tabs.executeScript(tab.id, {file: 'logic.js'});  
+    chrome.tabs.executeScript(tab.id, {file: 'panelScript.js'});
+    
     loaded = true;
   }
 });
