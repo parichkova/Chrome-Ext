@@ -1,12 +1,11 @@
 
 <?php
 header('Content-Type: text/html; charset=utf-8');
-
-//require_once 'mainOps.php';
+require_once 'winter.php';
 
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = DB_USER_NAME;
+$password = DB_PASSWORD;
 $createNewDB = FALSE;
 
 //file  content check
