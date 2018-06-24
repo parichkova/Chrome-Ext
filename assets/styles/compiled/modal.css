@@ -81,4 +81,37 @@
 .hidden {
   display: none; }
 
+.tr-tool-holder {
+  position: fixed;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  top: 10px;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+}
+
+.tr-tool-holder ul {
+  display: flex;
+  width: 80%;
+  height: 50px;
+  background-color: rgb(255, 255, 255);
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  align-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.tr-tool-holder ul li {
+  list-style: none;
+  cursor: pointer;
+}
+
+.tr-tool-holder .tr-toolbar-close-toolbar {
+  position: relative;
+  left: 79.5%;
+}
 /*# sourceMappingURL=modal.css.map */
