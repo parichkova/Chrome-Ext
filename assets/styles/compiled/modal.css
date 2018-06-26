@@ -111,7 +111,8 @@
 }
 
 .tr-tool-holder .tr-toolbar-close-toolbar {
-  position: relative;
-  left: 79.5%;
+  position: absolute;
+  top: 5px;
+  left: 88.5%;
 }
 /*# sourceMappingURL=modal.css.map */

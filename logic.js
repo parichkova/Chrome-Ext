@@ -51,7 +51,7 @@ let mainModalLogicHelper = (() => {
         let isBtnClose = e.target.classList.contains('tr-modal--close-btn');
         let isBtnSave = e.target.classList.contains('tr-modal--save-btn');
         let isBtnDownload = e.target.classList.contains('tr-modal--btn-download');
-        let isDestroyBtn = e.target.classList.contains('tr-modal--destroy-btn') || e.target.classList.contains('tr-modal--destroy-btn-holder');
+        let isDestroyBtn = target.classList.contains('tr-modal--destroy-btn') || target.classList.contains('tr-modal--destroy-btn-holder');
 
         if (isBtnSave) {
             saveTranslation(e);
@@ -122,6 +122,8 @@ let mainModalLogicHelper = (() => {
         textAreaEl = doc.getElementsByClassName('tr-modal--textarea')[0];
         
         modalEl.addEventListener('mousedown', dragHelper.dragElement);
+        console.log(dragHelper);
+        console.log(mainHelper);
     }
 
     function addValues(domEl, stringVal) {
@@ -176,6 +178,8 @@ let mainModalLogicHelper = (() => {
     }
 
     function destroyModal() {
+        if (!modalEl) {return;}
+
         doc.body.removeChild(modalEl);
         doc.removeEventListener('click', handleClick);
         removeEventListenersAnchorsButtons();
@@ -197,9 +201,9 @@ let mainModalLogicHelper = (() => {
       }
 
       return {
-        closeModal: destroyModal,
-        saveTranslation,
+        downloadFile: closeModal,
         buildModal: createTranslationField,
-        showModal
+        destroyModal: destroyModal,
+        showModal: showModal
     }
 })();
