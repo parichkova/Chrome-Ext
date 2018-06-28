@@ -22,7 +22,7 @@
 
 .tr-modal--destroy-btn {
   position: absolute;
-  left: 95%;
+  left: 92%;
   cursor: pointer;
 }
 
@@ -69,6 +69,11 @@
   height: 36px; }
   .tr-modal .tr-modal--close-btn:hover {
     background-color: rgba(163, 7, 7, 0.1); }
+
+.tr-modal--destroy-btn-holder {
+  height: 12px;
+  width: 100%;
+}
 
 .tr-modal--destroy {
   position: absolute;

@@ -48,10 +48,54 @@ let mainModalLogicHelper = (() => {
 
     function handleClick(e) {
         let target = e.target;
-        let isBtnClose = e.target.classList.contains('tr-modal--close-btn');
-        let isBtnSave = e.target.classList.contains('tr-modal--save-btn');
-        let isBtnDownload = e.target.classList.contains('tr-modal--btn-download');
-        let isDestroyBtn = target.classList.contains('tr-modal--destroy-btn') || target.classList.contains('tr-modal--destroy-btn-holder');
+        let isBtnClose = target.classList.contains('tr-modal--close-btn');
+        let isBtnSave = target.classList.contains('tr-modal--save-btn');
+        let isBtnDownload = target.classList.contains('tr-modal--btn-download');
+        let isDestroyBtn = false;
+        let isPanelOpenModal = false;
+        let isDownloadText = false;
+        let isCloseModalPanel = false;
+        let parent = target;
+        let index = -1;
+        let stop = false;
+        const arrOfClasses = [
+            'tr-tool-options-holder',
+            'tr-open-modal',
+            'tr-download-file',
+            'tr-close-modal',
+            'tr-toolbar-close-toolbar',
+            'tr-modal--destroy-btn-holder'
+        ];
+
+        do {
+            if (arrOfClasses.indexOf(parent.classList[0]) > -1) {
+                stop = true;
+                index = arrOfClasses.indexOf(parent.classList[0]);
+            }
+
+            parent = parent.parentNode;
+        }
+        while (!stop && parent.parentNode)
+
+        switch (index) {
+            case 1:
+                isPanelOpenModal = true;
+                break;
+            case 2:
+                isDownloadText = true;
+                break;
+            case 3:
+                isCloseModalPanel = true;
+                break;
+            case 3:
+                isDestroyPanel = true;
+                break;            
+            case 5:
+                isDestroyBtn = true;
+            case 0:
+            case 4:
+            default: break;
+        }
 
         if (isBtnSave) {
             saveTranslation(e);
@@ -62,20 +106,34 @@ let mainModalLogicHelper = (() => {
         }
 
         if (isDestroyBtn) {
+            isDestroyBtn = false;
             e.stopPropagation();
             e.preventDefault();
             destroyModal();
         }
 
         if (target.innerText && !(isBtnClose || isBtnSave || isBtnDownload || isDestroyBtn)) {
-            if (!isModalCreated) {
+            let modal = doc.querySelector('.tr-modal');
+
+            if (!modal) {
                 createTranslationField(target.innerText);
                 isModalCreated = true;
             }
             
             if (!(isBtnClose || isBtnSave || isBtnDownload) && modalEl && modalEl.classList.contains('hidden')) {
                 showModal(e);
-                addValues(textAreaEl, target.innerText);
+                addValues(textAreaEl, "");
+            }
+
+            if (target.innerText && !(isBtnClose || isBtnSave || isBtnDownload) && modalEl) {
+                textAreaEl.setAttribute('data-text', target.innerText);   
+            }
+
+            if (isPanelOpenModal || isCloseModalPanel || isDownloadText) {
+                isPanelOpenModal = false;
+                isCloseModalPanel = false;
+                isDownloadText = false;
+                return false;
             }
         }
     }
@@ -122,36 +180,57 @@ let mainModalLogicHelper = (() => {
         textAreaEl = doc.getElementsByClassName('tr-modal--textarea')[0];
         
         modalEl.addEventListener('mousedown', dragHelper.dragElement);
-        console.log(dragHelper);
-        console.log(mainHelper);
     }
 
     function addValues(domEl, stringVal) {
         if (!domEl || !stringVal) {
             return;
         }
+
         domEl.value = "";
         domEl.dataset.text = stringVal;
     }
 
     function saveTranslation(e) {
         e.stopPropagation();
+
         let originalText = textAreaEl.getAttribute('data-text');
         let translatedText = textAreaEl.value.trim();
 
-        if (!translatedText.length) {return;}
+        if (!textAreaEl.value.trim()) {
+            alert('No translated text entered, try once more.');
+
+            return;
+        }
+
+        if (!textAreaEl.getAttribute('data-text')) {
+            alert('Yo have not selected text to translate.');
+
+            return;
+        }
 
         hideModal(e);
-
+        let flag = false;
         try {
-            translationArrOfObjs.push({
-                originalText: originalText,
-                translatedText: translatedText
-            });
-        
+            for ({'originalText': originalText, 'translatedText': translatedText} in translationArrOfObjs) {
+                if (translationArrOfObjs.hasOwnProperty({'originalText': originalText, 'translatedText': translatedText}) 
+                && translationArrOfObjs[{'originalText': originalText, 'translatedText': translatedText}] === {'originalText': originalText, 'translatedText': translatedText}) {
+    
+                    flag = true;
+                }
+            }
+
+            if (!flag) {
+                translationArrOfObjs.push({
+                    originalText: originalText,
+                    translatedText: translatedText
+                });
+            }
         } catch(ex) {
             console.log(ex);
         }
+        
+        flag = false;
     }
 
     function hideModal(e) {
@@ -165,22 +244,34 @@ let mainModalLogicHelper = (() => {
     }
 
     function closeModal(e) {
+        if (!modalEl || !textAreaEl.value.trim()) {
+            alert('Sorry, no selection to download.');
+
+            return;
+        }
+
         let language = doc.documentElement.lang ? doc.documentElement.lang.split('-')[0] : 'en';
         let urlSplitted =  window.location.pathname.split('/');
-        let pageName = window.location.host.replace('.', '_') + '_' + urlSplitted[urlSplitted.length - 2].replace('-', '_');
+        let pageName = window.location.host.replace('.', '_') + '_' + urlSplitted[urlSplitted.length - 1].replace('-', '_').replace('.','_');
 
         saveTranslation(e);
         translationArrOfObjs.push({'lang': language, 'page': pageName});
 
-        download("hello.txt", JSON.stringify(translationArrOfObjs));
+        download(urlSplitted[urlSplitted.length - 1].replace('-', '_').replace('.','_') + ".txt", JSON.stringify(translationArrOfObjs));
 
         isModalCreated = true;
     }
 
     function destroyModal() {
-        if (!modalEl) {return;}
+        if (!modalEl) {
+            alert('Sorry, no existing modal to close.');
 
-        doc.body.removeChild(modalEl);
+            return;
+        }
+
+        let parent = modalEl.parentNode;
+
+        parent.removeChild(modalEl);
         doc.removeEventListener('click', handleClick);
         removeEventListenersAnchorsButtons();
     }
@@ -203,7 +294,7 @@ let mainModalLogicHelper = (() => {
       return {
         downloadFile: closeModal,
         buildModal: createTranslationField,
-        destroyModal: destroyModal,
+        destroyModal: hideModal,
         showModal: showModal
     }
 })();

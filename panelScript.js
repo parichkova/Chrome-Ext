@@ -10,8 +10,8 @@
     let isCloseBtn = false;
     let isDestroyBtn = false;
     let isSaveBtn = false;
+    let isDestroyPanelBtn = false;
     let modal = doc.getElementsByClassName('tr-modal')[0];
-    let isBuilt = modal ? modal.classList.contains('hidden') : false;
     
     constructToolBar();
     addEventListeners();
@@ -71,26 +71,40 @@
             let target = e.target;
             let parent = target;
             let stop = false;
+            let index = -1;
+            const arrOfClasses = [
+                'tr-open-modal',
+                'tr-download-file',
+                'tr-close-modal',
+                'tr-toolbar-close-toolbar',
+            ];
 
             do {
-                if (parent.classList.contains('tr-close-modal')) {
-                    isCloseBtn = true;
+                if (arrOfClasses.indexOf(parent.classList[0]) > -1) {
                     stop = true;
-                } else if (parent.classList.contains('tr-open-modal')) {
-                    isOpenBtn = true;
-                    stop = true;
-                } else if (parent.classList.contains('tr-download-file')) {
-                    isSaveBtn = true;
-                    stop = true;
-                } else if (parent.classList.contains('tr-toolbar-close-toolbar')) {
-                    isDestroyBtn = true;
-                    stop = true;
+                    index = arrOfClasses.indexOf(parent.classList[0]);
                 }
-    
+
                 parent = parent.parentNode;
-    
-            } while (parent.parentNode && !stop);
-    
+            }
+            while (!stop && parent.parentNode)
+
+            switch (index) {
+                case 0:
+                    isOpenBtn = true;
+                    break;
+                case 1:
+                    isSaveBtn = true;
+                    break;
+                case 2:
+                    isCloseBtn = true;
+                    break;
+                case 3:
+                    isDestroyPanelBtn = true;
+                    break;            
+                default: break;
+            }
+
             handleCallbacks(e);
         });
     }
@@ -102,13 +116,15 @@
         }
     
         if (isCloseBtn) {
-            mainModalLogicHelper.destroyModal();
+            mainModalLogicHelper.destroyModal(e);
             isCloseBtn = false;
         }
       
         if (isOpenBtn) {
+            let isBuilt = doc.querySelector('.tr-modal');
+
             if (isBuilt) {
-                mainModalLogicHelper.showModal();
+                mainModalLogicHelper.showModal(e);
             } else {
                 mainModalLogicHelper.buildModal();
             }
@@ -118,13 +134,25 @@
       
         if (isSaveBtn) {
             modal = doc.getElementsByClassName('tr-modal')[0];
+            isSaveBtn = false;
 
             if (!modal) {
+                alert('No selection ever made, please select some text and add translation.');
+
                 return;
             }
 
             mainModalLogicHelper.downloadFile(e);
-            isSaveBtn = false;
+        }
+
+        if (isDestroyPanelBtn) {
+            let panel = doc.querySelector('.tr-tool-holder');
+            let parentPanel = panel ? panel.parentNode : null;
+
+            if (parentPanel) {
+                parentPanel.removeChild(panel);
+                isDestroyPanelBtn = false;
+            }
         }
     }
 })();

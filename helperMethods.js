@@ -7,7 +7,20 @@ let mainHelper = (() => {
         return el instanceof SVGElement;
     }
 
+    function containsObject(obj, list) {
+        let  x = obj;
+        for (x in list) {
+            if (list.hasOwnProperty(x) && list[x] === obj) {
+
+                return true;
+            }
+        }
+    
+        return false;
+    }
+
     return {
-        isSVGElement: isSVGElement
-    };
+        isSVGElement: isSVGElement,
+        contains: containsObject
+    }
 })(); 
