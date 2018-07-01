@@ -1,7 +1,6 @@
 //this is design pattern - module
 var mainModalLogicHelper = (() => {
     let doc = document;
-    let singletonFlag = false;
     let isModalCreated = false;
     let modalEl = null;
     let textAreaEl = null;
@@ -10,12 +9,6 @@ var mainModalLogicHelper = (() => {
     let buttonsArr = document.getElementsByTagName('button');
     let anchorsArrLen =  anchorsArr.length;
     let buttonsArrLen = buttonsArr.length;
-
-    if (!singletonFlag) {
-        singletonFlag = true;    
-    } else {
-        return;
-    }
 
     (function addEventListenersAnchorsButtons() {
         while(anchorsArrLen--) {
@@ -43,6 +36,7 @@ var mainModalLogicHelper = (() => {
     doc.addEventListener('click', handleClick);
 
     function facadeStopPropagation(e) {
+        e.stopPropagation();
         e.preventDefault();
     }
 
@@ -55,16 +49,17 @@ var mainModalLogicHelper = (() => {
         let isPanelOpenModal = false;
         let isDownloadText = false;
         let isCloseModalPanel = false;
+        let isTheModal = false;
         let parent = target;
         let index = -1;
         let stop = false;
         const arrOfClasses = [
-            'tr-tool-options-holder',
             'tr-open-modal',
             'tr-download-file',
             'tr-close-modal',
             'tr-toolbar-close-toolbar',
-            'tr-modal--destroy-btn-holder'
+            'tr-modal--destroy-btn-holder',
+            'tr-modal'
         ];
 
         do {
@@ -74,26 +69,25 @@ var mainModalLogicHelper = (() => {
             }
 
             parent = parent.parentNode;
-        }
-        while (!stop && parent.parentNode)
+        } while (!stop && parent.parentNode)
 
         switch (index) {
-            case 1:
+            case 0:
                 isPanelOpenModal = true;
                 break;
-            case 2:
+            case 1:
                 isDownloadText = true;
                 break;
-            case 3:
+            case 2:
                 isCloseModalPanel = true;
                 break;
             case 3:
                 isDestroyPanel = true;
                 break;            
-            case 5:
-                isDestroyBtn = true;
-            case 0:
             case 4:
+                isDestroyBtn = true;
+            case 5: 
+                isTheModal = true;
             default: break;
         }
 
@@ -107,12 +101,11 @@ var mainModalLogicHelper = (() => {
 
         if (isDestroyBtn) {
             isDestroyBtn = false;
-            e.stopPropagation();
-            e.preventDefault();
+            facadeStopPropagation(e);
             destroyModal();
         }
 
-        if (target.innerText && !(isBtnClose || isBtnSave || isBtnDownload || isDestroyBtn)) {
+        if (target.innerText && !(isBtnClose || isBtnSave || isBtnDownload || isDestroyBtn || isTheModal)) {
             let modal = doc.querySelector('.tr-modal');
 
             if (!modal) {
@@ -120,21 +113,25 @@ var mainModalLogicHelper = (() => {
                 isModalCreated = true;
             }
             
-            if (!(isBtnClose || isBtnSave || isBtnDownload) && modalEl && modalEl.classList.contains('hidden')) {
-                showModal(e);
-                addValues(textAreaEl, "");
-            }
-
-            if (target.innerText && !(isBtnClose || isBtnSave || isBtnDownload) && modalEl) {
-                textAreaEl.setAttribute('data-text', target.innerText);   
-            }
-
-            if (isPanelOpenModal || isCloseModalPanel || isDownloadText) {
+            
+            if (isPanelOpenModal || isCloseModalPanel || isDownloadText || isTheModal) {
                 isPanelOpenModal = false;
                 isCloseModalPanel = false;
                 isDownloadText = false;
+                isTheModal = false;
                 return false;
             }
+
+            if (!(isBtnClose || isBtnSave || isBtnDownload) && modalEl && modalEl.classList.contains('hidden')) {
+                showModal(e);
+            }
+
+            if (target.innerText && !(isBtnClose || isBtnSave || isBtnDownload || isTheModal) && modalEl) {
+                if (!textAreaEl.getAttribute('data-text')) {
+                    textAreaEl.setAttribute('data-text', target.innerText);
+                }
+            }
+
         }
     }
 
@@ -181,8 +178,6 @@ var mainModalLogicHelper = (() => {
         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>\
         <path d="M0 0h24v24H0z" fill="none"/></svg>';
 
-        addValues(textArea, text);
-        
         destroyBtnHolder.appendChild(destroyBtn);
         buttonsHolder.appendChild(dropdownOptions);
 
@@ -201,8 +196,11 @@ var mainModalLogicHelper = (() => {
         modalEl.addEventListener('mousedown', dragHelper.dragElement);
     }
 
-    function addValues(domEl, stringVal) {
-        if (!domEl || !stringVal) {
+    function addValues(domElClassList, stringVal) {
+        let element = doc.querySelector(domElClassList);
+
+        if (!element) {
+            alert('nqma element');
             return;
         }
 
@@ -258,8 +256,9 @@ var mainModalLogicHelper = (() => {
     }
 
     function showModal(e) {
-        e.stopPropagation();
-        modalEl.classList.remove('hidden');       
+        facadeStopPropagation(e);
+        modalEl.classList.remove('hidden');
+        addValues('tr-modal--textarea', "");   
     }
 
     function closeModal(e) {
@@ -269,9 +268,15 @@ var mainModalLogicHelper = (() => {
             return;
         }
 
+        if (!textAreaEl.getAttribute('data-text')) {
+            alert('Yo have not selected text to translate.');
+
+            return;
+        }
+
         let language = doc.querySelector('.tr-modal--lang-options').value;
         let urlSplitted =  window.location.pathname.split('/');
-        let pageName = window.location.host.replace('.', '_') + '_' + urlSplitted[urlSplitted.length - 1].replace('-', '_').replace('.','_');
+        let pageName = window.location.host.replace('.', '_') + '_' + urlSplitted[urlSplitted.length - 2].replace('-', '_').replace('.','_');
 
         saveTranslation(e);
         translationArrOfObjs.push({'lang': language, 'page': pageName});
