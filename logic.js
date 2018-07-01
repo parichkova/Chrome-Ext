@@ -229,27 +229,25 @@ var mainModalLogicHelper = (() => {
         }
 
         hideModal(e);
-        let flag = false;
-        try {
-            for ({'originalText': originalText, 'translatedText': translatedText} in translationArrOfObjs) {
-                if (translationArrOfObjs.hasOwnProperty({'originalText': originalText, 'translatedText': translatedText}) 
-                && translationArrOfObjs[{'originalText': originalText, 'translatedText': translatedText}] === {'originalText': originalText, 'translatedText': translatedText}) {
-    
-                    flag = true;
+        let trLen = translationArrOfObjs.length;
+
+        if (!trLen) {
+            translationArrOfObjs.push({
+                originalText: originalText,
+                translatedText: translatedText
+            });
+        } else {
+            while (trLen--) {
+                if (translationArrOfObjs[trLen] && translationArrOfObjs[trLen].hasOwnProperty('translatedText') && translationArrOfObjs[trLen].hasOwnProperty('originalText')) {
+                    if (translationArrOfObjs[trLen].translatedText !== translatedText && translationArrOfObjs[trLen].originalText !== originalText) {
+                        translationArrOfObjs.push({
+                            originalText: originalText,
+                            translatedText: translatedText
+                        });
+                    }
                 }
             }
-
-            if (!flag) {
-                translationArrOfObjs.push({
-                    originalText: originalText,
-                    translatedText: translatedText
-                });
-            }
-    } catch(ex) {
-            console.log(ex);
         }
-        
-        flag = false;
     }
 
     function hideModal(e) {
@@ -278,7 +276,7 @@ var mainModalLogicHelper = (() => {
         saveTranslation(e);
         translationArrOfObjs.push({'lang': language, 'page': pageName});
 
-        download(urlSplitted[urlSplitted.length - 1].replace('-', '_').replace('.','_') + ".txt", JSON.stringify(translationArrOfObjs));
+        download(urlSplitted[urlSplitted.length - 2].replace('-', '_').replace('.','_') + ".txt", JSON.stringify(translationArrOfObjs));
 
         isModalCreated = true;
     }
