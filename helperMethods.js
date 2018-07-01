@@ -1,4 +1,4 @@
-let mainHelper = (() => {
+var mainHelper = (() => {
     console.log('a');
     
     function isSVGElement(el) {

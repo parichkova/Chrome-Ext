@@ -1,5 +1,5 @@
 //this is design pattern - module
-let mainModalLogicHelper = (() => {
+var mainModalLogicHelper = (() => {
     let doc = document;
     let singletonFlag = false;
     let isModalCreated = false;
@@ -147,7 +147,15 @@ let mainModalLogicHelper = (() => {
         let header = doc.createElement('h3');
         let destroyBtnHolder = doc.createElement('div');
         let destroyBtn = doc.createElement('span');
-
+        let dropdownOptions = doc.createElement('select');
+        let optionsList = [
+            'EN',
+            'DE',
+            'ES',
+            'RU'
+        ];
+        let lent = optionsList.length;
+        
         modal.classList.add('tr-modal');
         header.classList.add('tr-modal--heading');
         textArea.classList.add('tr-modal--textarea');
@@ -156,6 +164,15 @@ let mainModalLogicHelper = (() => {
         closeBtn.classList.add('tr-modal--close-btn');
         destroyBtnHolder.classList.add('tr-modal--destroy-btn-holder');
         destroyBtn.classList.add('tr-modal--destroy-btn');
+        dropdownOptions.classList.add('tr-modal--lang-options');
+        
+        while(lent--) {
+            let el = doc.createElement('option');
+            
+            el.value = optionsList[lent];
+            el.text = optionsList[lent];
+            dropdownOptions.appendChild(el);
+        }
 
         header.innerText = 'Translation Helper';
         button.innerText = 'SAVE';
@@ -167,14 +184,16 @@ let mainModalLogicHelper = (() => {
         addValues(textArea, text);
         
         destroyBtnHolder.appendChild(destroyBtn);
+        buttonsHolder.appendChild(dropdownOptions);
+
         buttonsHolder.appendChild(button);
         buttonsHolder.appendChild(closeBtn);
-       
+
         modal.appendChild(destroyBtnHolder);
         modal.appendChild(header);
         modal.appendChild(textArea);
         modal.appendChild(buttonsHolder);
-        
+
         doc.body.appendChild(modal);
         modalEl  = doc.getElementsByClassName('tr-modal')[0];
         textAreaEl = doc.getElementsByClassName('tr-modal--textarea')[0];
@@ -226,7 +245,7 @@ let mainModalLogicHelper = (() => {
                     translatedText: translatedText
                 });
             }
-        } catch(ex) {
+    } catch(ex) {
             console.log(ex);
         }
         
@@ -235,7 +254,9 @@ let mainModalLogicHelper = (() => {
 
     function hideModal(e) {
         e.stopPropagation();
-        modalEl.classList.add('hidden');
+        if (modalEl) {
+            modalEl.classList.add('hidden');
+        }
     }
 
     function showModal(e) {
@@ -250,7 +271,7 @@ let mainModalLogicHelper = (() => {
             return;
         }
 
-        let language = doc.documentElement.lang ? doc.documentElement.lang.split('-')[0] : 'en';
+        let language = doc.querySelector('.tr-modal--lang-options').value;
         let urlSplitted =  window.location.pathname.split('/');
         let pageName = window.location.host.replace('.', '_') + '_' + urlSplitted[urlSplitted.length - 1].replace('-', '_').replace('.','_');
 

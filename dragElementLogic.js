@@ -1,4 +1,4 @@
-let dragHelper = (() => {
+var dragHelper = (() => {
     const doc = document;
     let modalEl = null;
 
