@@ -111,7 +111,7 @@ var mainModalLogicHelper = (() => {
             if (!modal) {
                 createTranslationField(target.innerText);
                 isModalCreated = true;
-                modal.querySelector('.tr-modal--textarea').setAttribute('data-text', target.innerText);
+                doc.querySelector('.tr-modal .tr-modal--textarea').setAttribute('data-text', target.innerText);
             }
             
             
@@ -125,6 +125,7 @@ var mainModalLogicHelper = (() => {
 
             if (!(isBtnClose || isBtnSave || isBtnDownload) && modalEl && modalEl.classList.contains('hidden')) {
                 showModal(e);
+                doc.querySelector('.tr-modal .tr-modal--textarea').setAttribute('data-text', target.innerText);
             }
 
             if (target.innerText && !(isBtnClose || isBtnSave || isBtnDownload || isTheModal) && modalEl) {
@@ -204,8 +205,7 @@ var mainModalLogicHelper = (() => {
             return;
         }
 
-        domEl.value = "";
-        domEl.dataset.text = stringVal;
+        element.value = "";
     }
 
     function saveTranslation(e) {
@@ -258,7 +258,7 @@ var mainModalLogicHelper = (() => {
     function showModal(e) {
         facadeStopPropagation(e);
         modalEl.classList.remove('hidden');
-        addValues('tr-modal--textarea', "");   
+        addValues('.tr-modal--textarea', "");
     }
 
     function closeModal(e) {
@@ -319,6 +319,6 @@ var mainModalLogicHelper = (() => {
         downloadFile: closeModal,
         buildModal: createTranslationField,
         destroyModal: hideModal,
-        showModal: showModal
+        showModal
     }
 })();
