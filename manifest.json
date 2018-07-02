@@ -2,12 +2,12 @@
   "name": "Translate",
   "version": "0.0.1",
   "manifest_version": 2,
-  "description" : "Description ...",
+  "description" : "Click on the text you would like to translate",
   "icons": { "16": "icons/translation.png"},
-  "omnibox": { "keyword" : "yeah" },
+  "omnibox": { "keyword" : "Translate" },
   "browser_action": {
       "default_icon": { "19": "icons/translation.png"},
-      "default_title": "That's the tool tip"
+      "default_title": "Translation Helper"
   },
   "background": {
       "scripts": ["background.js"],
