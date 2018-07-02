@@ -228,23 +228,26 @@ var mainModalLogicHelper = (() => {
 
         hideModal(e);
         let trLen = translationArrOfObjs.length;
+        let flag = false;
 
-        if (!trLen) {
+        
+        while (trLen--) {
+            if (translationArrOfObjs[trLen] && translationArrOfObjs[trLen].hasOwnProperty('translatedText') && translationArrOfObjs[trLen].hasOwnProperty('originalText')) {
+                if (translationArrOfObjs[trLen].translatedText !== translatedText && translationArrOfObjs[trLen].originalText !== originalText) {
+                    flag = true;
+                }
+            }
+        }
+
+        trLen = translationArrOfObjs.length;
+
+        if (flag || trLen === 0) {
             translationArrOfObjs.push({
                 originalText: originalText,
                 translatedText: translatedText
             });
-        } else {
-            while (trLen--) {
-                if (translationArrOfObjs[trLen] && translationArrOfObjs[trLen].hasOwnProperty('translatedText') && translationArrOfObjs[trLen].hasOwnProperty('originalText')) {
-                    if (translationArrOfObjs[trLen].translatedText !== translatedText && translationArrOfObjs[trLen].originalText !== originalText) {
-                        translationArrOfObjs.push({
-                            originalText: originalText,
-                            translatedText: translatedText
-                        });
-                    }
-                }
-            }
+
+            flag = false;
         }
     }
 
