@@ -200,7 +200,6 @@ var mainModalLogicHelper = (() => {
         let element = doc.querySelector(domElClassList);
 
         if (!element) {
-            alert('nqma element');
             return;
         }
 
