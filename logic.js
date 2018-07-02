@@ -36,7 +36,6 @@ var mainModalLogicHelper = (() => {
     doc.addEventListener('click', handleClick);
 
     function facadeStopPropagation(e) {
-        e.stopPropagation();
         e.preventDefault();
     }
 
@@ -102,6 +101,7 @@ var mainModalLogicHelper = (() => {
         if (isDestroyBtn) {
             isDestroyBtn = false;
             facadeStopPropagation(e);
+            e.preventDefault();
             destroyModal();
         }
 
