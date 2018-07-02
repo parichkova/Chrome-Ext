@@ -111,6 +111,7 @@ var mainModalLogicHelper = (() => {
             if (!modal) {
                 createTranslationField(target.innerText);
                 isModalCreated = true;
+                modal.querySelector('.tr-modal--textarea').setAttribute('data-text', target.innerText);
             }
             
             
